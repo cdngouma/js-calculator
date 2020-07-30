@@ -1,3 +1,151 @@
 * {
    margin: 0;
+   box-sizing: border-box;
+}
+
+.App {
+   border: solid 1px red;
+   width: 394px;
+   margin: auto;
+   padding: 3px;
+}
+
+#app_name {
+   border: solid 1px rebeccapurple;
+   font-size: 1.2em;
+   padding: 10px 20px;
+}
+
+#display {
+   border: solid 1px seagreen;
+   width: 100%;
+   padding: 5px 10px;
+   display: flex;
+   flex-direction: column;
+   align-items: flex-end;
+}
+
+#formula-display {
+   border: solid 1px forestgreen;
+   height: 18px;
+   text-align: right;
+   opacity: 60%;
+}
+
+#result-display {
+   border: solid 1px coral;
+   font-size: 2.8em;
+   text-align: right;
+}
+
+#keyboard {
+   border: solid 1px aqua;
+   width: 100%;
+   display: grid;
+   grid-template-columns: 97px 96px 96px 96px;
+   grid-template-rows: 50px 50px 50px 50px 50px 50px;
+   gap: auto;
+}
+
+/* First row */
+#percent {
+   grid-column-start: 1;
+   grid-row-start: 1;
+}
+#reset {
+   grid-column-start: 2;
+   grid-row-start: 1;
+}
+#clear {
+   grid-column-start: 3;
+   grid-row-start: 1;
+}
+#delete {
+   grid-column-start: 4;
+   grid-row-start: 1;
+}
+/* Second row */
+#inv {
+   grid-column-start: 1;
+   grid-row-start: 2;
+}
+#sqr {
+   grid-column-start: 2;
+   grid-row-start: 2;
+}
+#sqrt {
+   grid-column-start: 3;
+   grid-row-start: 2;
+}
+#divide {
+   grid-column-start: 4;
+   grid-row-start: 2;
+}
+/* Third row */
+#seven {
+   grid-column-start: 1;
+   grid-row-start: 3;
+}
+#eight {
+   grid-column-start: 2;
+   grid-row-start: 3;
+}
+#nine {
+   grid-column-start: 3;
+   grid-row-start: 3;
+}
+#multiply {
+   grid-column-start: 4;
+   grid-row-start: 3;
+}
+/* Fourth row */
+#four {
+   grid-column-start: 1;
+   grid-row-start: 4;
+}
+#five {
+   grid-column-start: 2;
+   grid-row-start: 4;
+}
+#six {
+   grid-column-start: 3;
+   grid-row-start: 4;
+}
+#subtract {
+   grid-column-start: 4;
+   grid-row-start: 4;
+}
+/* Fith row */
+#one {
+   grid-column-start: 1;
+   grid-row-start: 5;
+}
+#two {
+   grid-column-start: 2;
+   grid-row-start: 5;
+}
+#three {
+   grid-column-start: 3;
+   grid-row-start: 5;
+}
+#add {
+   grid-column-start: 4;
+   grid-row-start: 5;
+}
+/* Sixth row */
+#sign-toggle {
+   grid-column-start: 1;
+   grid-row-start: 6;
+}
+#zero {
+   grid-column-start: 2;
+   grid-row-start: 6;
+}
+#decimal {
+   grid-column-start: 3;
+   grid-row-start: 6;
+}
+#equals {
+   grid-column-start: 4;
+   grid-row-start: 6;
 }
