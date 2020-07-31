@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import './App.css';
 
 const appName = "Standard Calculator";
-const DIGIT_LIMIT = 16;
 const NUMBER_REGEX = /[0-9]+(\.[0-9]+)?/;
-const OPERATION_REGEX = /[+-/*]/;
+const OPERATION_REGEX = /(\+|\-|\*|\/)/;
 const FUNCTION_REGEX = /(inv|sqr|sqrt)/;
 
 function App() {
@@ -14,35 +13,38 @@ function App() {
    const [lastEntered, setLastEntered] = useState('0');
 
    const handleNumbers = (event) => {
+      const DIGIT_LIMIT = 16;
       const num = event.target.value;
-
+      // If previous value entered is an operator, reset current value arr
+      // and initialize it with new number entered
       if (lastEntered.match(OPERATION_REGEX)) {
-         setCurrentVal([num]);
+         // Add one leading zero for decimal number < 0
+         setCurrentVal(num === '.' ? ['0', '.'] : [num]);
          setLastEntered(num);
       }
       else {
-         const prevVal = currentVal;
-
+         const prevVal = [...currentVal];
          if (prevVal.length < DIGIT_LIMIT) {
+            // Prevent leading zeros
             if (num === '0' && currentVal.length <= 0 || num === '.' && isDecimal(currentVal)) {
                // pass
             } else {
+               // Add one leading zero for decimal number < 0
                if (num === '.' && prevVal.length === 0) {
                   prevVal.push('0');
                }
-
                setCurrentVal([...prevVal, num]);
                setLastEntered(num);
             }
          } else {
-            setCurrentVal(["{Digit limit met}"]);
+            setCurrentVal(["[digit limit met]"]);
             setTimeout(() => setCurrentVal([...prevVal]), 1200);
          }
       }
    }
 
    const handleOperations = (event) => {
-      const op = event.target.value;
+      const op = event.target.value; // Operator
 
       if(lastEntered.match(NUMBER_REGEX)) {
          const value = parseFloat(currentVal.join("") || 0);
@@ -56,7 +58,7 @@ function App() {
          setFormula([answer, op]);
          setLastEntered(op);
       }
-      
+      // Unexpected error
       else {
          console.log('ERROR!! unrecognized value', lastEntered);
       }
@@ -68,7 +70,8 @@ function App() {
 
    function removeLastDigit() {
       currentVal.pop();
-
+      // Remove last element from currenVal
+      // Empty currentVal if it now only contains a zero
       if (currentVal.length === 1 && currentVal[0] === '0') {
          setCurrentVal([]);
       } else {
@@ -157,21 +160,29 @@ function App() {
     }
 
    /* Scientific Functions */
-   /*function inverse(x) {
-      return 1/x;
-   }
 
-   function square(x) {
-      return Math.pow(x, 2);
-   }
+   function handleSciFunctions(event) {
+      const func = event.target.value;
+      const value = parseFloat(currentVal.join("") || 0);
+      let result = undefined;
+      switch(func) {
+         case "inv":
+            result = 1/value;
+            break;
+         case "sqr":
+            result = Math.pow(value, 2);
+            break;
+         case "sqrt":
+            result = Math.sqrt(value);
+            break;
+      }
 
-   function squareRoot(x) {
-      return Math.sqrt(x);
+      console.log("result", result, "func", func, value);
+      setFormula([func, '(', value, ')', '=']);
+      setLastEntered('=');
+      setCurrentVal(result.toString().split(""));
+      setAnswer(result);
    }
-
-   function percent(x) {
-      return x * 100;
-   }*/
 
    return (
       <div className="App">
@@ -193,9 +204,9 @@ function App() {
                <button id="multiply" className="app__func-btn" value="*" onClick={handleOperations}>&times;</button>
                <button id="divide" className="app__func-btn" value="/" onClick={handleOperations}>&divide;</button>
                {/* Scientific functions */}
-               <button id="sqr" className="app__func-btn" value="sqr">sqr</button>
-               <button id="sqrt" className="app__func-btn" value="sqrt">sqrt</button>
-               <button id="inv" className="app__func-btn" value="inv">inv</button>
+               <button id="sqr" className="app__func-btn" value="sqr" onClick={handleSciFunctions}>sqr</button>
+               <button id="sqrt" className="app__func-btn" value="sqrt" onClick={handleSciFunctions}>sqrt</button>
+               <button id="inv" className="app__func-btn" value="inv" onClick={handleSciFunctions}>inv</button>
                <button id="percent" className="app__func-btn">%</button>
                {/* digits buttons */}
                <button id="zero" onClick={handleNumbers} value="0">0</button>
@@ -209,7 +220,7 @@ function App() {
                <button id="eight" onClick={handleNumbers} value="8">8</button>
                <button id="nine" onClick={handleNumbers} value="9">9</button>
                {/* other buttons */}
-               <button id="decimal" onClick={handleNumbers}>.</button>
+               <button id="decimal" onClick={handleNumbers} value=".">.</button>
                <button id="equals" onClick={handleResult}>=</button>
             </div>
          </div>
