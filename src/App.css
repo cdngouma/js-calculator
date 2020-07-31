@@ -1,61 +1,83 @@
-* {
-   margin: 0;
-   box-sizing: border-box;
+:root {
+   --background-color: #7FFFD4;
+   --calc-main-color: rgba(255,255,255,.7);
+   --calc-btn-color: #fff;
 }
 
 .App {
-   border: solid 1px red;
    width: 100vw;
    height: 100vh;
    display: flex;
    flex-direction: column;
    justify-content: center;
    align-items: center;
+   background-color: var(--background-color);
+}
+
+#welcome {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   margin-top: 15px;
 }
 
 #calculator {
-   border: solid 1px chocolate;
-   width: 394px;
-   padding: 3px;
+   width: 396px;
+   padding: 4px;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   background-color: var(--calc-main-color);
+   box-shadow: 0px 0px 15px 0px rgba(0,0,0,.3);
 }
 
 #app_name {
-   border: solid 1px rebeccapurple;
    font-size: 1.2em;
    padding: 10px 20px;
-   justify-content: center;
+   align-self: flex-start;
 }
 
 #display {
-   border: solid 1px seagreen;
    width: 100%;
-   padding: 10px 10px 20px 10px;
+   padding: 10px;
    display: flex;
    flex-direction: column;
    align-items: flex-end;
 }
 
 #formula-display {
-   border: solid 1px forestgreen;
-   /* height: 18px; */
+   min-height: 27.2px;
    text-align: right;
    margin-bottom: 5px;
-   /* opacity: 10%; */
+   opacity: 60%;
+   filter: alpha(opacity=60);
 }
 
 #result-display {
-   border: solid 1px coral;
    font-size: 2.63em;
    text-align: right;
 }
 
 #keyboard {
-   border: solid 1px aqua;
    width: 100%;
    display: grid;
-   grid-template-columns: 97px 96px 96px 96px;
-   grid-template-rows: 50px 50px 50px 50px 50px 50px;
-   gap: auto;
+   justify-content: center;
+   grid-template-columns: 96px 96px 96px 96px;
+   grid-template-rows: 48px 48px 48px 48px 48px 48px;
+   gap: 1.6px;
+}
+
+#keyboard button {
+   background-color: var(--calc-btn-color);
+   border: none;
+   text-decoration: none;
+   outline: none;
+   cursor: pointer;
+   font-size: 17px;
+}
+
+button.app__func-btn {
+   opacity: 60% !important;
 }
 
 /* First row */
@@ -64,11 +86,11 @@
    grid-row-start: 1;
 }
 #reset {
-   grid-column-start: 2;
+   grid-column-start: 3;
    grid-row-start: 1;
 }
 #clear {
-   grid-column-start: 3;
+   grid-column-start: 2;
    grid-row-start: 1;
 }
 #delete {
@@ -149,7 +171,8 @@
    grid-row-start: 6;
 }
 #zero {
-   grid-column-start: 2;
+   grid-column-start: 1;
+   grid-column-end: span 2;
    grid-row-start: 6;
 }
 #decimal {
@@ -159,4 +182,5 @@
 #equals {
    grid-column-start: 4;
    grid-row-start: 6;
+   background-color: #E9D45E !important;
 }
