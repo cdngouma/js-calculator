@@ -48,13 +48,12 @@
 #formula-display {
    min-height: 27.2px;
    text-align: right;
-   margin-bottom: 5px;
    opacity: 60%;
    filter: alpha(opacity=60);
 }
 
 #result-display {
-   font-size: 2.63em;
+   font-size: 2.55em;
    text-align: right;
 }
 
@@ -63,7 +62,7 @@
    display: grid;
    justify-content: center;
    grid-template-columns: 96px 96px 96px 96px;
-   grid-template-rows: 48px 48px 48px 48px 48px 48px;
+   grid-template-rows: 49px 49px 49px 49px 49px 49px;
    gap: 1.6px;
 }
 
@@ -81,7 +80,7 @@ button.app__func-btn {
 }
 
 /* First row */
-#percent {
+#round {
    grid-column-start: 1;
    grid-row-start: 1;
 }
@@ -171,8 +170,7 @@ button.app__func-btn {
    grid-row-start: 6;
 }
 #zero {
-   grid-column-start: 1;
-   grid-column-end: span 2;
+   grid-column-start: 2;
    grid-row-start: 6;
 }
 #decimal {
