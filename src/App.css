@@ -73,6 +73,11 @@
    outline: none;
    cursor: pointer;
    font-size: 17px;
+   transition: .5s;
+}
+
+#keyboard button:hover {
+   filter: brightness(96%);
 }
 
 button.app__func-btn {

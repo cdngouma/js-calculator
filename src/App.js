@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import './App.css';
 
+import Display from './Display';
+import Keyboard from './Keyboard';
+
+
 const appName = "Standard Calculator";
 const NUMBER_REGEX = /[0-9]+(\.[0-9]+)?/;
 const OPERATION_REGEX = /(\+|\-|\*|\/)/;
@@ -53,10 +57,10 @@ function App() {
    }
 
    function toggleSign() {
-      if(currentVal.length === 0 || (currentVal.length === 1 && currentVal[0] === '0')) {
+      if (currentVal.length === 0 || (currentVal.length === 1 && currentVal[0] === '0')) {
          return;
       }
-      
+
       if (currentVal[0] === '-') {
          currentVal.shift();
          setCurrentVal([...currentVal]);
@@ -117,7 +121,7 @@ function App() {
       // Remove last element from currenVal. Empty currentVal if 
       // it now only contains ['0'], ['-', '0'], or ['-']
       const N = currentVal.length;
-      if ((N == 2 && currentVal[N-2] === '-' && currentVal[N-1] === '0') || (currentVal[N-1] === '-')) {
+      if ((N == 2 && currentVal[N - 2] === '-' && currentVal[N - 1] === '0') || (currentVal[N - 1] === '-')) {
          setCurrentVal([]);
       } else {
          setCurrentVal([...currentVal]);
@@ -212,51 +216,28 @@ function App() {
       }
    }
 
-   console.log(history);
-
    return (
       <div className="App">
          <div id="calculator">
             <h1 id="app_name">{appName}</h1>
-            <div id="display">
-               <span id="formula-display">{formula.join(" ")}</span>
-               <span id="result-display">{currentVal.join("") || 0}</span>
-            </div>
-
-            <div id="keyboard">
-               {/* System buttons */}
-               <button id="clear" className="app__func-btn" onClick={clearDisplay}>CE</button>
-               <button id="reset" className="app__func-btn" onClick={resetCalculator}>C</button>
-               <button id="delete" className="app__func-btn" onClick={removeLastDigit}>DEL</button>
-               {/* Basic operators */}
-               <button id="add" className="app__func-btn" value="+" onClick={handleOperations}>+</button>
-               <button id="subtract" className="app__func-btn" value="-" onClick={handleOperations}>&minus;</button>
-               <button id="multiply" className="app__func-btn" value="*" onClick={handleOperations}>&times;</button>
-               <button id="divide" className="app__func-btn" value="/" onClick={handleOperations}>&divide;</button>
-               {/* Scientific functions */}
-               <button id="sqr" className="app__func-btn" value="sqr" onClick={handleSciFunctions}>sqr</button>
-               <button id="sqrt" className="app__func-btn" value="sqrt" onClick={handleSciFunctions}>sqrt</button>
-               <button id="inv" className="app__func-btn" value="inv" onClick={handleSciFunctions}>inv</button>
-               <button id="percent" className="app__func-btn" value="round" onClick={handleSciFunctions}>round</button>
-               {/* digits buttons */}
-               <button id="zero" value="0" onClick={handleNumbers}>0</button>
-               <button id="one" value="1" onClick={handleNumbers}>1</button>
-               <button id="two" value="2" onClick={handleNumbers}>2</button>
-               <button id="three" value="3" onClick={handleNumbers}>3</button>
-               <button id="four" value="4" onClick={handleNumbers}>4</button>
-               <button id="five" value="5" onClick={handleNumbers}>5</button>
-               <button id="six" value="6" onClick={handleNumbers}>6</button>
-               <button id="seven" value="7" onClick={handleNumbers}>7</button>
-               <button id="eight" value="8" onClick={handleNumbers}>8</button>
-               <button id="nine" value="9" onClick={handleNumbers}>9</button>
-               {/* other buttons */}
-               <button id="decimal" onClick={handleNumbers} value=".">.</button>
-               <button id="sign-toggle" onClick={toggleSign}>+/-</button>
-               <button id="equals" onClick={handleResult}>=</button>
-            </div>
+            <Display formula={formula.join(" ")} 
+                     currentVal={currentVal.join("") || 0}
+            />
+            <Keyboard clear={clearDisplay}
+                      reset={resetCalculator}
+                      delete={removeLastDigit}
+                      operations={handleOperations}
+                      functions={handleSciFunctions}
+                      numbers={handleNumbers}
+                      toggleSign={toggleSign}
+                      handleResult={handleResult}
+            />
          </div>
          <div id="welcome">
-            <p>Designed and Coded By <a href="https://www.github.com/cdngouma" target="_blank" rel="noopener noreferrer">cdngouma</a></p>
+            <p>Designed and Coded By 
+               <a href="https://www.github.com/cdngouma" 
+                  target="_blank" rel="noopener noreferrer">cdngouma</a>
+            </p>
          </div>
       </div>
    );
