@@ -4,7 +4,7 @@ import './App.css';
 const appName = "Standard Calculator";
 const DIGIT_LIMIT = 16;
 const NUMBER_REGEX = /[0-9]+(\.[0-9]+)?/;
-const OPERATION_REGEX = /(\+|\-|\/|x)/;
+const OPERATION_REGEX = /[+-/*]/;
 const FUNCTION_REGEX = /(inv|sqr|sqrt)/;
 
 function App() {
@@ -13,49 +13,51 @@ function App() {
    const [answer, setAnswer] = useState(0);
    const [lastEntered, setLastEntered] = useState('0');
 
-   const handleDigitInput = (event) => {
-      const digit = event.target.textContent;
+   const handleNumbers = (event) => {
+      const num = event.target.value;
 
       if (lastEntered.match(OPERATION_REGEX)) {
-         setCurrentVal([digit]);
-         setLastEntered(digit);
+         setCurrentVal([num]);
+         setLastEntered(num);
       }
       else {
-         const oldVal = currentVal;
+         const prevVal = currentVal;
 
-         if (oldVal.length < DIGIT_LIMIT) {
-            if (digit === '0' && currentVal.length <= 0 || digit === '.' && isDecimal(currentVal)) {
+         if (prevVal.length < DIGIT_LIMIT) {
+            if (num === '0' && currentVal.length <= 0 || num === '.' && isDecimal(currentVal)) {
                // pass
             } else {
-               if (digit === '.' && oldVal.length === 0) {
-                  oldVal.push('0');
+               if (num === '.' && prevVal.length === 0) {
+                  prevVal.push('0');
                }
 
-               setCurrentVal([...oldVal, digit]);
-               setLastEntered(digit);
+               setCurrentVal([...prevVal, num]);
+               setLastEntered(num);
             }
          } else {
             setCurrentVal(["{Digit limit met}"]);
-            setTimeout(() => setCurrentVal([...oldVal]), 1200);
+            setTimeout(() => setCurrentVal([...prevVal]), 1200);
          }
       }
    }
 
-   const handleBasicOperationInput = (event) => {
-      if (lastEntered.match(NUMBER_REGEX)) {
-         const newAnswer = parseFloat(currentVal.join("") || 0);
-         const op = event.target.textContent;
+   const handleOperations = (event) => {
+      const op = event.target.value;
 
-         setAnswer(newAnswer);
-         setFormula([...formula, newAnswer, op]);
+      if(lastEntered.match(NUMBER_REGEX)) {
+         const value = parseFloat(currentVal.join("") || 0);
+         setFormula([...formula, value, op]);
          setLastEntered(op);
-
-      } else if (lastEntered.match(OPERATION_REGEX)) {
-         const op = event.target.textContent;
+      } else if(lastEntered.match(OPERATION_REGEX)) {
          formula.pop();
          setFormula([...formula, op]);
          setLastEntered(op);
-      } else {
+      } else if(lastEntered === '=') {
+         setFormula([answer, op]);
+         setLastEntered(op);
+      }
+      
+      else {
          console.log('ERROR!! unrecognized value', lastEntered);
       }
    }
@@ -85,9 +87,74 @@ function App() {
       setLastEntered('0');
    }
 
-   function evaluate(expression) {
+   function handleResult() {
+      // Add current value to formula before evaluating
+      const updatedFormula = [...formula, parseFloat(currentVal.join("") || 0)];
+      setFormula([...updatedFormula, '=']);
+      setLastEntered('=');
 
+      const value = evaluate(updatedFormula);
+      setCurrentVal(value.toString().split(""));
+      setAnswer(value);
    }
+
+   function evaluate(expression) {
+      let values = [];
+      let operators = [];
+      console.log('formula used', expression);
+    
+      for(let i = 0; i < expression.length; i++) {
+        let token = expression[i];
+        console.log(token, typeof(token));
+        // Current token is a number, push it onto values stack
+        if(token.toString().match(/[0-9]+/)) {
+          values.push(parseFloat(token));
+        }
+        // Current token is an operator (+, -, /, x)
+        else if(token.match(/[+-/*]/)) {
+          // While top of operators stack has a higher or equal level
+          // of precedence to current token (which is also an operator)
+          // apply operator on top of operators stack to two top values
+          while(operators.length > 0 && precedence(token) >= precedence(operators[operators.length-1])) {
+            // First value popped is second operand
+            values.push(applyOperations(operators.pop(), values.pop(), values.pop()));
+          }
+          // Push current token to operators stack
+          operators.push(token);
+        }
+      }
+    
+      // the entire expression has been parsed at this point, 
+      // apply remaining operators to remaining values
+      while(operators.length > 0) {
+        // Remember, first value popped is second operand
+        values.push(applyOperations(operators.pop(), values.pop(), values.pop()));
+      }
+
+      return values.pop();
+    }
+    
+    function applyOperations(operator, y, x) {
+      switch(operator) {
+        case '+':
+          return x + y;
+        case '-':
+          return x - y;
+        case '*':
+          return x*y;
+        case '/':
+          return x/y;
+      }
+    }
+    
+    function precedence(x) {
+      switch(x) {
+        case '*': case '/':
+          return 2;
+        case '+': case '-':
+          return 1;
+      }
+    }
 
    /* Scientific Functions */
    /*function inverse(x) {
@@ -106,23 +173,6 @@ function App() {
       return x * 100;
    }*/
 
-   /* Basic Operations */
-   /*function add(a, b) {
-      return a + b;
-   }
-
-   function subtract(a, b) {
-      return a - b;
-   }
-
-   function multiply(a, b) {
-      return a * b;
-   }
-
-   function divide(a, b) {
-      return 
-   }*/
-
    return (
       <div className="App">
          <div id="calculator">
@@ -138,29 +188,29 @@ function App() {
                <button id="reset" className="app__func-btn" onClick={resetCalculator}>C</button>
                <button id="delete" className="app__func-btn" onClick={removeLastDigit}>DEL</button>
                {/* Basic operators */}
-               <button id="add" className="app__func-btn" onClick={handleBasicOperationInput}>+</button>
-               <button id="subtract" className="app__func-btn" onClick={handleBasicOperationInput}>-</button>
-               <button id="multiply" className="app__func-btn" onClick={handleBasicOperationInput}>x</button>
-               <button id="divide" className="app__func-btn" onClick={handleBasicOperationInput}>/</button>
+               <button id="add" className="app__func-btn" value="+" onClick={handleOperations}>+</button>
+               <button id="subtract" className="app__func-btn" value="-" onClick={handleOperations}>&minus;</button>
+               <button id="multiply" className="app__func-btn" value="*" onClick={handleOperations}>&times;</button>
+               <button id="divide" className="app__func-btn" value="/" onClick={handleOperations}>&divide;</button>
                {/* Scientific functions */}
-               <button id="sqr" className="app__func-btn">sqr</button>
-               <button id="sqrt" className="app__func-btn">sqrt</button>
-               <button id="inv" className="app__func-btn">inv</button>
+               <button id="sqr" className="app__func-btn" value="sqr">sqr</button>
+               <button id="sqrt" className="app__func-btn" value="sqrt">sqrt</button>
+               <button id="inv" className="app__func-btn" value="inv">inv</button>
                <button id="percent" className="app__func-btn">%</button>
                {/* digits buttons */}
-               <button id="zero" onClick={handleDigitInput}>0</button>
-               <button id="one" onClick={handleDigitInput}>1</button>
-               <button id="two" onClick={handleDigitInput}>2</button>
-               <button id="three" onClick={handleDigitInput}>3</button>
-               <button id="four" onClick={handleDigitInput}>4</button>
-               <button id="five" onClick={handleDigitInput}>5</button>
-               <button id="six" onClick={handleDigitInput}>6</button>
-               <button id="seven" onClick={handleDigitInput}>7</button>
-               <button id="eight" onClick={handleDigitInput}>8</button>
-               <button id="nine" onClick={handleDigitInput}>9</button>
+               <button id="zero" onClick={handleNumbers} value="0">0</button>
+               <button id="one" onClick={handleNumbers} value="1">1</button>
+               <button id="two" onClick={handleNumbers} value="2">2</button>
+               <button id="three" onClick={handleNumbers} value="3">3</button>
+               <button id="four" onClick={handleNumbers} value="4">4</button>
+               <button id="five" onClick={handleNumbers} value="5">5</button>
+               <button id="six" onClick={handleNumbers} value="6">6</button>
+               <button id="seven" onClick={handleNumbers} value="7">7</button>
+               <button id="eight" onClick={handleNumbers} value="8">8</button>
+               <button id="nine" onClick={handleNumbers} value="9">9</button>
                {/* other buttons */}
-               <button id="decimal" onClick={handleDigitInput}>.</button>
-               <button id="equals">=</button>
+               <button id="decimal" onClick={handleNumbers}>.</button>
+               <button id="equals" onClick={handleResult}>=</button>
             </div>
          </div>
          <div id="welcome">
