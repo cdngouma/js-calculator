@@ -1,7 +1,10 @@
+@import url('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+
 :root {
-   --background-color: #7FFFD4;
-   --calc-main-color: rgba(255,255,255,.7);
+   --background-color: #7fffd4;
+   --calc-main-color: rgba(255, 255, 255, 0.7);
    --calc-btn-color: #fff;
+   background-color: r;
 }
 
 .App {
@@ -14,11 +17,16 @@
    background-color: var(--background-color);
 }
 
-#welcome {
+#footer {
    display: flex;
    flex-direction: column;
    align-items: center;
    margin-top: 15px;
+}
+
+#footer a {
+   text-decoration: none;
+   color: blue;
 }
 
 #calculator {
@@ -28,16 +36,31 @@
    flex-direction: column;
    align-items: center;
    background-color: var(--calc-main-color);
-   box-shadow: 0px 0px 15px 0px rgba(0,0,0,.3);
+   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.3);
+}
+
+#header {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+   padding: 10px 20px;
 }
 
 #app_name {
    font-size: 1.2em;
-   padding: 10px 20px;
-   align-self: flex-start;
 }
 
-#display {
+#color {
+   cursor: pointer;
+   margin-left: auto;
+}
+
+#color:hover {
+   opacity: 60%;
+}
+
+.display__screen {
    width: 100%;
    padding: 10px;
    display: flex;
@@ -45,19 +68,23 @@
    align-items: flex-end;
 }
 
-#formula-display {
-   min-height: 27.2px;
+#formula {
+   min-height: 25.6px;
    text-align: right;
    opacity: 60%;
    filter: alpha(opacity=60);
 }
 
-#result-display {
-   font-size: 2.55em;
+#display {
+   line-height:65px;
+   font-size: 3.2em;
    text-align: right;
+   vertical-align: middle;
+   font-family: 'Roboto Mono', monospace;
+   opacity: 75%;
 }
 
-#keyboard {
+.keyboard {
    width: 100%;
    display: grid;
    justify-content: center;
@@ -66,17 +93,17 @@
    gap: 1.6px;
 }
 
-#keyboard button {
+.keyboard button {
    background-color: var(--calc-btn-color);
    border: none;
    text-decoration: none;
    outline: none;
    cursor: pointer;
    font-size: 17px;
-   transition: .5s;
+   transition: 0.5s;
 }
 
-#keyboard button:hover {
+.keyboard button:hover {
    filter: brightness(96%);
 }
 
@@ -185,5 +212,5 @@ button.app__func-btn {
 #equals {
    grid-column-start: 4;
    grid-row-start: 6;
-   background-color: #E9D45E !important;
+   background-color: #e9d45e !important;
 }

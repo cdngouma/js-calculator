@@ -2,7 +2,7 @@ import React from 'react';
 
 function Keyboard(props) {
    return (
-      <div id="keyboard">
+      <div className="keyboard">
          {/* System buttons */}
          <button id="clear" className="app__func-btn" onClick={props.clear}>CE</button>
          <button id="reset" className="app__func-btn" onClick={props.reset}>C</button>

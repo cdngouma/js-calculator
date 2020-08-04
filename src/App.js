@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css';
 
 import Display from './Display';
@@ -7,17 +7,19 @@ import Keyboard from './Keyboard';
 
 const appName = "Standard Calculator";
 const NUMBER_REGEX = /[0-9]+(\.[0-9]+)?/;
-const OPERATION_REGEX = /(\+|\-|\*|\/)/;
+const OPERATION_REGEX = /(\+|-|\*|\/)/;
 
 function App() {
-   const [formula, setFormula] = useState([]);
-   const [currentVal, setCurrentVal] = useState([]);
-   const [answer, setAnswer] = useState(0);
-   const [lastEntered, setLastEntered] = useState('0');
-   const [history, setHistory] = useState([]);
+   const [formula, setFormula] = React.useState([]);
+   const [currentVal, setCurrentVal] = React.useState([]);
+   const [answer, setAnswer] = React.useState(0);
+   const [lastEntered, setLastEntered] = React.useState('0');
+   const [backgroundColor, setbackgroundColor] = React.useState('#7fffd4');
+
+   const DIGIT_LIMIT = 15;
 
    const handleNumbers = (event) => {
-      const DIGIT_LIMIT = 16;
+      // Reset font size
       const num = event.target.value;
       // If previous value entered is an operator, reset current value arr
       // and initialize it with new number entered
@@ -25,7 +27,6 @@ function App() {
          if (lastEntered === '=') {
             // Add formula to history
             formula.pop();
-            setHistory([...history, { formula, answer }]);
             resetCalculator();
          }
          // Add one leading zero for decimal number < 0
@@ -35,7 +36,8 @@ function App() {
          const prevVal = [...currentVal];
          if (prevVal.length < DIGIT_LIMIT) {
             // Prevent leading zeros
-            if (num === '0' && currentVal.length <= 0 || num === '.' && isDecimal(currentVal)) {
+            if ((num === '0' && currentVal.length <= 0) ||
+               (num === '.' && isDecimal(currentVal))) {
                // pass
             } else {
                // Add one leading zero for decimal number < 0
@@ -46,7 +48,7 @@ function App() {
                setLastEntered(num);
             }
          } else {
-            setCurrentVal(["[digit limit met]"]);
+            setCurrentVal(["    digit limit met"]);
             setTimeout(() => setCurrentVal([...prevVal]), 1200);
          }
       }
@@ -92,7 +94,7 @@ function App() {
 
    function handleSciFunctions(event) {
       const func = event.target.value;
-      const value = Math.round(100000000000 * parseFloat(currentVal.join("") || 0)) / 100000000000;
+      const value = parseFloat(currentVal.join("") || 0);
       let result = undefined;
 
       switch (func) {
@@ -108,20 +110,25 @@ function App() {
          case "round":
             result = Math.round(value);
             break;
+         default:
       }
 
       setFormula([func, '(', value, ')', '=']);
       setLastEntered('=');
-      setCurrentVal(result.toString().split(""));
+      setCurrentVal([result.toString()]);
       setAnswer(result);
    }
 
    function removeLastDigit() {
       currentVal.pop();
+      const N = currentVal.length;
+
+      if (lastEntered === '=') {
+         setCurrentVal([]);
+      }
       // Remove last element from currenVal. Empty currentVal if 
       // it now only contains ['0'], ['-', '0'], or ['-']
-      const N = currentVal.length;
-      if ((N == 2 && currentVal[N - 2] === '-' && currentVal[N - 1] === '0') || (currentVal[N - 1] === '-')) {
+      else if ((N === 2 && currentVal[N - 2] === '-' && currentVal[N - 1] === '0') || (currentVal[N - 1] === '-')) {
          setCurrentVal([]);
       } else {
          setCurrentVal([...currentVal]);
@@ -150,93 +157,48 @@ function App() {
          setFormula([...updatedFormula, '=']);
          setLastEntered('=');
 
-         const value = Math.round(100000000000 * evaluate(updatedFormula)) / 100000000000;
-         setCurrentVal(value.toString().split(""));
+         const value = eval(updatedFormula.join(""));
+         setCurrentVal([value.toString()]);
          setAnswer(value);
       }
 
       // Add formula to history
       formula.pop();
-      setHistory([...history, { formula, answer }]);
    }
 
-   function evaluate(expression) {
-      let values = [];
-      let operators = [];
-
-      for (let i = 0; i < expression.length; i++) {
-         let token = expression[i];
-         // Current token is a number, push it onto values stack
-         if (token.toString().match(/[0-9]+/)) {
-            values.push(parseFloat(token));
-         }
-         // Current token is an operator (+, -, /, x)
-         else if (token.match(/[+-/*]/)) {
-            // While top of operators stack has a higher or equal level
-            // of precedence to current token (which is also an operator)
-            // apply operator on top of operators stack to two top values
-            while (operators.length > 0 && precedence(token) >= precedence(operators[operators.length - 1])) {
-               // First value popped is second operand
-               values.push(applyOperations(operators.pop(), values.pop(), values.pop()));
-            }
-            // Push current token to operators stack
-            operators.push(token);
-         }
-      }
-
-      // the entire expression has been parsed at this point, 
-      // apply remaining operators to remaining values
-      while (operators.length > 0) {
-         // Remember, first value popped is second operand
-         values.push(applyOperations(operators.pop(), values.pop(), values.pop()));
-      }
-
-      return values.pop();
-   }
-
-   function applyOperations(operator, y, x) {
-      switch (operator) {
-         case '+':
-            return x + y;
-         case '-':
-            return x - y;
-         case '*':
-            return x * y;
-         case '/':
-            return x / y;
-      }
-   }
-
-   function precedence(x) {
-      switch (x) {
-         case '*': case '/':
-            return 2;
-         case '+': case '-':
-            return 1;
-      }
+   function changeBgColor(event) {
+      const colors = ['#7fffd4','#e9967a','#008b8b',
+                      '#f0e68c','#ffdead',
+                      '#bc8f8f','#008080'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      console.log(color);
+      setbackgroundColor(color);
    }
 
    return (
-      <div className="App">
+      <div className="App" style={{backgroundColor: backgroundColor}}>
          <div id="calculator">
-            <h1 id="app_name">{appName}</h1>
-            <Display formula={formula.join(" ")} 
-                     currentVal={currentVal.join("") || 0}
+            <div id="header">
+               <h1 id="app_name">{appName}</h1>
+               <i id="color" 
+                  className="fa fa-paint-brush" 
+                  aria-hidden="true" 
+                  onClick={changeBgColor}></i>
+            </div>
+            <Display formula={formula.join(" ")} currentVal={currentVal.join("") || '0'}
             />
             <Keyboard clear={clearDisplay}
-                      reset={resetCalculator}
-                      delete={removeLastDigit}
-                      operations={handleOperations}
-                      functions={handleSciFunctions}
-                      numbers={handleNumbers}
-                      toggleSign={toggleSign}
-                      handleResult={handleResult}
+               reset={resetCalculator}
+               delete={removeLastDigit}
+               operations={handleOperations}
+               functions={handleSciFunctions}
+               numbers={handleNumbers}
+               toggleSign={toggleSign}
+               handleResult={handleResult}
             />
          </div>
-         <div id="welcome">
-            <p>Designed and Coded By 
-               <a href="https://www.github.com/cdngouma" 
-                  target="_blank" rel="noopener noreferrer">cdngouma</a>
+         <div id="footer">
+            <p>Designed and Coded By <a id="author" href="https://www.github.com/cdngouma" target="_blank" rel="noopener noreferrer">cdngouma</a>
             </p>
          </div>
       </div>
