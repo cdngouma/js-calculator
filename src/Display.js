@@ -16,8 +16,10 @@ function Display(props) {
          return `${2.72 - ((NUM_DIGITS-14)*.15)}em`;
       } else if (NUM_DIGITS <= 20) {
          return `${2.27 - ((NUM_DIGITS-17)*.12)}em`;
+      } else if (NUM_DIGITS < 23) {
+         return "1.77em";
       } else {
-         return "1.79em";
+         return "1.63em";
       }
    }
 
