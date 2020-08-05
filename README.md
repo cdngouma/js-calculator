@@ -2,5 +2,5 @@ This project is part of the [FreeCodeCamp](https://www.freecodecamp.org/learn/fr
 ## Js-calculator
 A JavaScript standard calculator build with React. Click [here](https://cdngouma.github.io/js-calculator/) for a demo.
 The app was implemented using the formula/expression logic to compute the result. i.e. `3 + 5 x 6 - 2 / 4 = 32.5` and supports all basic operations and more.
-### screenshot
-![screenshot]("./js-calculator.png")
+
+<img src="./js-calculator.PNG" width="700" style="margin:auto;"/>
