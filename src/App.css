@@ -54,6 +54,7 @@
 #color {
    cursor: pointer;
    margin-left: auto;
+   opacity: 75%;
 }
 
 #color:hover {

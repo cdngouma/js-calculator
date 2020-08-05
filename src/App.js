@@ -16,30 +16,28 @@ function App() {
    const [lastEntered, setLastEntered] = React.useState('0');
    const [backgroundColor, setbackgroundColor] = React.useState('#7fffd4');
 
-   const DIGIT_LIMIT = 15;
-
    const handleNumbers = (event) => {
-      // Reset font size
-      let num = event.key || event.target.value;
-      console.log(num, event.target.value, event.key);
-      // If previous value entered is an operator, reset current value arr
-      // and initialize it with new number entered
+      const num = event.key || event.target.value;
+      const DIGIT_LIMIT = 15;  // Max number of character in an input value
+      
+      // If previous value entered is an operator, reset current value list
+      // and initialize it with the new value entered
       if (lastEntered.match(OPERATION_REGEX) || lastEntered === '=') {
          if (lastEntered === '=') {
-            // Add formula to history
-            formula.pop();
             resetCalculator();
          }
          // Add one leading zero for decimal number < 0
          setCurrentVal(num === '.' ? ['0', '.'] : [num]);
          setLastEntered(num);
-      } else {
+      } 
+      // If previous value entered is a digit or decimal point (.),
+      // keep adding digits to the current value list
+      else {
          const prevVal = [...currentVal];
          if (prevVal.length < DIGIT_LIMIT) {
-            // Prevent leading zeros
             if ((num === '0' && currentVal.length <= 0) ||
                (num === '.' && isDecimal(currentVal))) {
-               // pass
+               // Prevent leading zeros for non decimal numbers
             } else {
                // Add one leading zero for decimal number < 0
                if (num === '.' && prevVal.length === 0) {
@@ -48,7 +46,9 @@ function App() {
                setCurrentVal([...prevVal, num]);
                setLastEntered(num);
             }
-         } else {
+         } 
+         // Print error message if digit limit is reached
+         else {
             setCurrentVal(["    digit limit met"]);
             setTimeout(() => setCurrentVal([...prevVal]), 1200);
          }
@@ -60,7 +60,9 @@ function App() {
    }
 
    function toggleSign() {
-      if (currentVal.length === 0 || (currentVal.length === 1 && currentVal[0] === '0')) {
+      if (currentVal.length === 0 || 
+            (currentVal.length === 1 &&  currentVal[0] === '0') || 
+            lastEntered === '=') {
          return;
       }
 
@@ -73,13 +75,15 @@ function App() {
    }
 
    const handleOperations = (event) => {
-      let op = event.key || event.target.value; // Operator
+      const op = event.key || event.target.value; // Operator +, -, /, or *
 
       if (lastEntered.match(NUMBER_REGEX)) {
          const value = parseFloat(currentVal.join("") || 0);
          setFormula([...formula, value, op]);
          setLastEntered(op);
-      } else if (lastEntered.match(OPERATION_REGEX)) {
+      } 
+      // Update operator
+      else if (lastEntered.match(OPERATION_REGEX)) {
          formula.pop();
          setFormula([...formula, op]);
          setLastEntered(op);
@@ -89,12 +93,12 @@ function App() {
       }
       // Unexpected error
       else {
-         console.log('ERROR!! unrecognized value', lastEntered);
+         console.error('ERROR!! operator not recognized:', lastEntered);
       }
    }
 
    function handleSciFunctions(event) {
-      let func = event.target.value;
+      const func = event.target.value;
       const value = parseFloat(currentVal.join("") || 0);
       let result = undefined;
 
@@ -129,7 +133,8 @@ function App() {
       }
       // Remove last element from currenVal. Empty currentVal if 
       // it now only contains ['0'], ['-', '0'], or ['-']
-      else if ((N === 2 && currentVal[N - 2] === '-' && currentVal[N - 1] === '0') || (currentVal[N - 1] === '-')) {
+      else if ((N === 2 && currentVal[N - 2] === '-' && currentVal[N - 1] === '0') || 
+               (currentVal[N - 1] === '-')) {
          setCurrentVal([]);
       } else {
          setCurrentVal([...currentVal]);
@@ -170,7 +175,7 @@ function App() {
 
    function handleKeyPress(event) {
       event.preventDefault();
-      console.log(event.key);
+
       if (event.key.match(NUMBER_REGEX) || event.key === '.') {
          handleNumbers(event);
       } else if (event.key.match(OPERATION_REGEX)) {
@@ -182,8 +187,6 @@ function App() {
       }
    }
 
-   //console.log('curr val:', currentVal, 'ans:', answer, 'formula:', formula);
-
    return (
       <div className="App" style={{backgroundColor: backgroundColor}}>
          <div id="calculator" tabIndex={-1} onKeyDown={handleKeyPress}>
@@ -194,8 +197,8 @@ function App() {
                   aria-hidden="true" 
                   onClick={changeBgColor}></i>
             </div>
-            <Display formula={formula.join(" ")} currentVal={currentVal.join("") || '0'}
-            />
+            <Display formula={formula.join(" ")} 
+                     currentVal={currentVal.join("") || '0'} />
             <Keyboard clear={clearDisplay}
                reset={resetCalculator}
                delete={removeLastDigit}
@@ -203,8 +206,7 @@ function App() {
                functions={handleSciFunctions}
                numbers={handleNumbers}
                toggleSign={toggleSign}
-               handleResult={handleResult}
-            />
+               handleResult={handleResult} />
          </div>
          <div id="footer">
             <p>Designed and Coded By <a id="author" href="https://www.github.com/cdngouma" target="_blank" rel="noopener noreferrer">cdngouma</a>
