@@ -20,7 +20,8 @@ function App() {
 
    const handleNumbers = (event) => {
       // Reset font size
-      const num = event.target.value;
+      let num = event.key || event.target.value;
+      console.log(num, event.target.value, event.key);
       // If previous value entered is an operator, reset current value arr
       // and initialize it with new number entered
       if (lastEntered.match(OPERATION_REGEX) || lastEntered === '=') {
@@ -72,7 +73,7 @@ function App() {
    }
 
    const handleOperations = (event) => {
-      const op = event.target.value; // Operator
+      let op = event.key || event.target.value; // Operator
 
       if (lastEntered.match(NUMBER_REGEX)) {
          const value = parseFloat(currentVal.join("") || 0);
@@ -93,7 +94,7 @@ function App() {
    }
 
    function handleSciFunctions(event) {
-      const func = event.target.value;
+      let func = event.target.value;
       const value = parseFloat(currentVal.join("") || 0);
       let result = undefined;
 
@@ -156,28 +157,36 @@ function App() {
          const updatedFormula = [...formula, parseFloat(currentVal.join("") || 0)];
          setFormula([...updatedFormula, '=']);
          setLastEntered('=');
-
          const value = eval(updatedFormula.join(""));
          setCurrentVal([value.toString()]);
          setAnswer(value);
       }
-
-      // Add formula to history
-      formula.pop();
    }
 
-   function changeBgColor(event) {
-      const colors = ['#7fffd4','#e9967a','#008b8b',
-                      '#f0e68c','#ffdead',
-                      '#bc8f8f','#008080'];
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      console.log(color);
-      setbackgroundColor(color);
+   function changeBgColor() {
+      const COLORS = ['#7fffd4','#e9967a','#008b8b','#f0e68c','#ffdead','#bc8f8f','#008080'];
+      setbackgroundColor(COLORS[Math.floor(Math.random() * COLORS.length)]);
    }
+
+   function handleKeyPress(event) {
+      event.preventDefault();
+      console.log(event.key);
+      if (event.key.match(NUMBER_REGEX) || event.key === '.') {
+         handleNumbers(event);
+      } else if (event.key.match(OPERATION_REGEX)) {
+         handleOperations(event);
+      } else if (event.key === 'Enter') {
+         handleResult();
+      } else if (event.key === 'Backspace') {
+         removeLastDigit();
+      }
+   }
+
+   //console.log('curr val:', currentVal, 'ans:', answer, 'formula:', formula);
 
    return (
       <div className="App" style={{backgroundColor: backgroundColor}}>
-         <div id="calculator">
+         <div id="calculator" tabIndex={-1} onKeyDown={handleKeyPress}>
             <div id="header">
                <h1 id="app_name">{appName}</h1>
                <i id="color" 
