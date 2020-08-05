@@ -54,11 +54,11 @@
 #color {
    cursor: pointer;
    margin-left: auto;
-   opacity: 75%;
+   opacity: .75;
 }
 
 #color:hover {
-   opacity: 60%;
+   opacity: .6;
 }
 
 .display__screen {
@@ -72,8 +72,7 @@
 #formula {
    min-height: 25.6px;
    text-align: right;
-   opacity: 60%;
-   filter: alpha(opacity=60);
+   opacity: .6;
 }
 
 #display {
@@ -109,7 +108,7 @@
 }
 
 button.app__func-btn {
-   opacity: 60% !important;
+   opacity: .6 !important;
 }
 
 /* First row */
