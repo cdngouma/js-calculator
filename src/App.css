@@ -54,6 +54,9 @@
 #color {
    cursor: pointer;
    margin-left: auto;
+   filter: alpha(opacity=75);
+   -moz-pacity: .75;
+   -khtml-opacity: .75;
    opacity: .75;
 }
 
@@ -72,6 +75,9 @@
 #formula {
    min-height: 25.6px;
    text-align: right;
+   filter: alpha(opacity=60);
+   -moz-pacity: .6;
+   -khtml-opacity: .6;
    opacity: .6;
 }
 
@@ -81,6 +87,9 @@
    text-align: right;
    vertical-align: middle;
    font-family: 'Roboto Mono', monospace;
+   filter: alpha(opacity=75);
+   -moz-pacity: .75;
+   -khtml-opacity: .75;
    opacity: 75%;
 }
 
@@ -108,7 +117,10 @@
 }
 
 button.app__func-btn {
-   /*opacity: .6 !important;*/
+   filter: alpha(opacity=60) !important;
+   -moz-pacity: .6 !important;
+   -khtml-opacity: .6 !important;
+   opacity: .6 !important;
 }
 
 /* First row */
