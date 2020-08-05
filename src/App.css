@@ -90,7 +90,7 @@
    filter: alpha(opacity=75);
    -moz-pacity: .75;
    -khtml-opacity: .75;
-   opacity: 75%;
+   opacity: .75;
 }
 
 .keyboard {
